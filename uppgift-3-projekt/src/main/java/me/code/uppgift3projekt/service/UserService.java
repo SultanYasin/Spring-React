@@ -32,13 +32,10 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("A user with username '" + username + "' could not be found."));
     }
 
-    public User register(String username, String password)
-            throws UserAlreadyExistsException
-    {
-        var existing = repository.getByUsername(username);
-        if (existing.isPresent())
-            throw new UserAlreadyExistsException();
+    public User register(String username, String password) throws UserAlreadyExistsException {
 
+        var existing = repository.getByUsername(username);
+        if (existing.isPresent()) throw new UserAlreadyExistsException();
         var user = new User(username, passwordEncoder.encode(password));
         repository.save(user);
 

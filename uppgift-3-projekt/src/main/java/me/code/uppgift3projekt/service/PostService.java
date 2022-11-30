@@ -8,9 +8,11 @@ import me.code.uppgift3projekt.exception.PostDoesNotExistException;
 import me.code.uppgift3projekt.repository.PostRepository;
 import me.code.uppgift3projekt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
+@Service
 public class PostService {
 
     private final PostRepository repository;
@@ -20,12 +22,10 @@ public class PostService {
         this.repository = repository;
     }
 
-    public Post create(User user, String title, String content)
-            throws PostAlreadyExistsException
-    {
+    public Post create(User user, String title, String content) throws PostAlreadyExistsException {
+
         var existing = repository.getByTitle(title);
-        if (existing.isPresent())
-            throw new PostAlreadyExistsException();
+        if (existing.isPresent()) throw new PostAlreadyExistsException();
 
         var post = new Post(title, content, user);
         repository.save(post);
@@ -33,9 +33,7 @@ public class PostService {
         return post;
     }
 
-    public Post delete(User user, String title)
-            throws PostDoesNotExistException, NotOwnerException
-    {
+    public Post delete(User user, String title) throws PostDoesNotExistException, NotOwnerException {
         var post = repository
                 .getByTitle(title)
                 .orElseThrow(PostDoesNotExistException::new);
@@ -48,9 +46,7 @@ public class PostService {
         return post;
     }
 
-    public Post edit(User user, String title, String updatedContent)
-            throws PostDoesNotExistException, NotOwnerException
-    {
+    public Post edit(User user, String title, String updatedContent) throws PostDoesNotExistException, NotOwnerException {
         var post = repository
                 .getByTitle(title)
                 .orElseThrow(PostDoesNotExistException::new);
