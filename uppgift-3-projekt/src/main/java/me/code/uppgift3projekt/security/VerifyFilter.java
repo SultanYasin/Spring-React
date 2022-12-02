@@ -3,6 +3,8 @@ package me.code.uppgift3projekt.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -19,28 +21,30 @@ public class VerifyFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
     // verifying, take out the information to check token, right token ... continue, otherwise cut the process
-        var authHeader = request.getHeader("Authorization");
+        var authorizationHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response); // continue with the chain without doing anything
             return;
         }
 
 
         // delete "Bearer" and get the rest of the token
-        var jwtToken = authHeader.substring("Bearer".length());
+        var jwtToken = authorizationHeader.substring("Bearer ".length());
         if (jwtToken.isBlank()){
             filterChain.doFilter(request, response);
             return;
         }
 
-
         try {
             var algorithm = Algorithm.HMAC256("secret");
-            var verifier = JWT.require(algorithm).withIssuer("auth0").build();
+            var verifier = JWT.require(algorithm).build();
             var jwt = verifier.verify(jwtToken);
 
-            System.out.println(jwt.getIssuer() + "\n" + jwt.getSubject());
+            var auth = new UsernamePasswordAuthenticationToken(jwt.getSubject() , "" ,null);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            System.out.println( jwt.getSubject());
 
             filterChain.doFilter(request , response);
 

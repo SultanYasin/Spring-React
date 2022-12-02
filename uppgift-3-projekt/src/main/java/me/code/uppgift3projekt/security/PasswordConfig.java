@@ -10,6 +10,7 @@ public class PasswordConfig {
 
     @Bean
     public PasswordEncoder encoder() {
+        //hashing the password
         return new BCryptPasswordEncoder(10);
     }
 }

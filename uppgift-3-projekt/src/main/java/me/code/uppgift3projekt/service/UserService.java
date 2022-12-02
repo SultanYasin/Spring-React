@@ -42,7 +42,11 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+        //Todo: add logout
+
     public Collection<User> getAll() {
         return repository.getAll();
     }
+
+
 }
