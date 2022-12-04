@@ -2,6 +2,7 @@ package me.code.uppgift3projekt.repository;
 
 import me.code.uppgift3projekt.data.Post;
 import me.code.uppgift3projekt.data.User;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -25,6 +26,7 @@ public class UserRepository {
     }
 
     public Collection<User> getAll() {
+        System.out.println("\n \n Values is: " + users.values() + "\n \n ");
         return users.values();
     }
 

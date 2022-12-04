@@ -3,6 +3,8 @@ package me.code.uppgift3projekt.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -16,7 +18,12 @@ import java.io.IOException;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    // "/login" endpoint is already exists.
+   private final AuthenticationManager manger;
+
+   @Autowired
+   public LoginFilter(AuthenticationManager manger){
+       this.manger = manger;
+   }
 
     @Override // autentisering
     public Authentication attemptAuthentication(
@@ -28,10 +35,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         var username = request.getHeader("username");
         var password = request.getHeader("password");
 
-        if ("ss".equals(username) && "ss".equals(password))
-            return new UsernamePasswordAuthenticationToken(username , password);
-
-        return null;
+        var auth =  new UsernamePasswordAuthenticationToken(username , password);
+        return manger.authenticate(auth);
     }
 
 
