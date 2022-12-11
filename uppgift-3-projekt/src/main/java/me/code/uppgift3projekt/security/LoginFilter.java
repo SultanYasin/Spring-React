@@ -16,9 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class LoginFilter extends UsernamePasswordAuthenticationFilter {
+public class LoginFilter<generatedToken> extends UsernamePasswordAuthenticationFilter {
 
    private final AuthenticationManager manger;
+
 
    @Autowired
    public LoginFilter(AuthenticationManager manger){
@@ -36,34 +37,36 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         var password = request.getHeader("password");
 
         var auth =  new UsernamePasswordAuthenticationToken(username , password);
+
         return manger.authenticate(auth);
     }
 
 
-    @Override // om autentisering lyckades
+    @Override
     protected void successfulAuthentication(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain chain,
-            Authentication authResult // I can get username from here
+            Authentication authResult
     ) throws IOException, ServletException {
-
         try {
 
-            var algorithm = Algorithm.HMAC256("secret");// all servers must have same code -> used to balance loading in all servers
-            // create new token by using the algorithm
+            var algorithm = Algorithm.HMAC256("secret");
             var generatedToken = JWT.create()
-                    .withSubject(authResult.getName()) // subject is the name of the user that trying to login, its value I get from  Authentication authResult in the constructor
+                    .withSubject(authResult.getName())
                     .sign(algorithm);
 
-            // info returns in response
-            response.addHeader("genrated token " ,generatedToken );
+            response.setHeader("x-genratedtoken" ,generatedToken );// info returns in response
+            // without "Access-Control-Expose-Headers" token will be always hidden.
+            int counter = 0;
+            response.setHeader("Access-Control-Expose-Headers", "x-genratedtoken");//************************
+            System.out.println("Generated token is : \n " + generatedToken  +"\n" + ++counter);
 
         }catch (JWTCreationException exception){
-           // exception.getCause().getMessage().toString();
             exception.printStackTrace();
-
         }
 
     }
+
+
 }

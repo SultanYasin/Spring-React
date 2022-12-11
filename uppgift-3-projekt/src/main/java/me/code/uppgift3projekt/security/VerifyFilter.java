@@ -36,15 +36,13 @@ public class VerifyFilter extends OncePerRequestFilter {
     // verifying, take out the information to check token, right token ... continue, otherwise cut the process
         var authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION); // ****************************** " "Authorization" "
 
-        if (!StringUtils.hasText(authorizationHeader) || (StringUtils.hasText(authorizationHeader) && !authorizationHeader.startsWith("Bearer ") ) ){
+        if (!StringUtils.hasText(authorizationHeader)
+                || (StringUtils.hasText(authorizationHeader)
+                && !authorizationHeader.startsWith("Bearer "))){
             filterChain.doFilter(request, response);
             return;
         }
-        /*
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response); // continue with the chain without doing anything
-            return;
-        }*/
+
 
 
         // delete "Bearer" and get the rest of the token

@@ -1,10 +1,16 @@
 package me.code.uppgift3projekt;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+
 @SpringBootApplication
+@ConfigurationPropertiesScan
 @CrossOrigin("*")
 public class Uppgift3ProjektApplication {
 
@@ -43,4 +49,16 @@ Bygg en frontend till föregående projekt där API:et används.
 Man skall kunna registrera användare, logga in, skapa posts, ta bort sina egna posts, ändra sina egna posts och se en lista på alla posts (för alla användare).
 
 Använd valfritt ramverk eller bibliotek.
+
+[10:32] William Enander
+response.addHeader("Access-Control-Expose-Headers", "Authorization")
+
+
+
+    CorsFilter corsFilter = new CorsFilter();
+    corsFilter.setAllowedHeaders("Content-Type, Access-Control-Allow-Headers, Access-Control-Expose-Headers, Content-Disposition,
+    Authorization, X-Requested-With");
+    corsFilter.setExposedHeaders("Content-Disposition");
+
+
 */
