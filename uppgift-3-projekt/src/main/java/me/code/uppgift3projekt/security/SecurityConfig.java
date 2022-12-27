@@ -14,6 +14,10 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -69,40 +73,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new LoginFilter(authenticationManager()))
                 .addFilterAfter(new VerifyFilter(userService), LoginFilter.class)
                 .authorizeRequests()
-                .antMatchers("/info")
+                .antMatchers("/post/create")
                 .authenticated()
                 .antMatchers("/**")
                 .permitAll();
-        /*
-                        .and()
-                .logout()
-                .permitAll()
-                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/access-denied");
-         */
+           }
 
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.applyPermitDefaultValues();
+        configuration.addAllowedMethod("PUT");
+        configuration.addAllowedMethod("DELETE");
+        configuration.addAllowedMethod("POST");
+        configuration.addAllowedOrigin("http://localhost:3000");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
 
-        /*
-        @Bean
-      public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        return http.csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .addFilter(new LoginFilter())
-                .addFilterAfter(new VerifyFilter(), LoginFilter.class) // roles
-                .authorizeRequests()
-                .antMatchers("/info")
-                .authenticated()
-                .antMatchers("/**")
-                .permitAll()
-                .and()
-                .build();
-
-*/
     }
 

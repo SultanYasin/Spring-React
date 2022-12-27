@@ -1,47 +1,66 @@
 package me.code.uppgift3projekt.controller;
 
 import me.code.uppgift3projekt.data.Post;
+import me.code.uppgift3projekt.exception.PostDoesNotExistException;
 import me.code.uppgift3projekt.service.PostService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/psots")
+@RequestMapping("/dashboard")
 public class PostController {
-    /*
-Skapa posts (kopplad till användare)
-Ta bort posts (bara egna posts
-Ändra posts (bara egna posts)
-Lista upp posts (av alla användare)
-Registrering (av användare)
-Inloggning (av användare)
-
     public PostController(){}
 
-        @Autowired
-        PostService postService;
+    @Autowired
+    PostService service;
 
-    private final Logger logger = LoggerFactory.getLogger(PostController.class);
-
-    @PostMapping("/add")
-    public Post create(@RequestBody Post post ){
-        logger.info("Post object {}" , post.toString());
-        return postService.create(post);
+    @PostMapping("/create")
+    public Post createTodo(@RequestBody Post post) {
+        return service.createTodo(post);
     }
-    @DeleteMapping("/delete")
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Post> updateItem(@PathVariable Long id, @RequestBody Post updatedPost) {
+        try {
+            Post post = service.updatePost(id, updatedPost);
+            return ResponseEntity.ok(post);
 
-    @GetMapping("/all")
+        } catch (PostDoesNotExistException e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    @GetMapping("/{id}")
-*/
+    @DeleteMapping("delete/{id}")
+    public void deleteTodo(@PathVariable Long id) throws PostDoesNotExistException {
+        service.deleteTodo(id);
+    }
 
+    @GetMapping("/getAll")
+    public List<Post> getAllTodos() {
+        return service.getAllTodos();
+    }
 
-
+    @GetMapping("/greeting")
+    public String greeting(){
+        return "Hi from protected mapping";
+    }
 
 
 }
+
+
+
+
+
+
+
+
+
+
+

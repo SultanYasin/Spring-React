@@ -25,15 +25,7 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
-    @GetMapping("/")
-    public String greetings() {
-        return "hi from  controller!";
-    }
 
-    @GetMapping("info")
-    public String info() {
-        return " ** hi from info! ** ";
-    }
 
     @PostMapping("/register")
     public String register(@RequestBody Map<String, Object> credentials) throws UserAlreadyExistsException {

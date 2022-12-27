@@ -34,7 +34,7 @@ const ListTodos = (props) => {
       headers: {
         "Content-Type": "application/json"
       }
-    }).then(console.log("Todos length : \n" + todos.length));
+    })
       const jsonData = await response.json();
       setTodos(jsonData);
     } catch (err) {
@@ -65,9 +65,7 @@ const ListTodos = (props) => {
     }
   };
 
-useEffect(() => {
-    getTodos();
-  }, []); 
+useEffect(() => { getTodos(); }, []); 
  
 
   return (
@@ -111,9 +109,10 @@ useEffect(() => {
               <td>{todo.title}</td>
               <td>{todo.description}</td>
               <td>
-                <EditTodo setTodosState = {setTodos} 
-                todo={todo} updateState = {getTodos}
-                />
+              {/*   <UpdateModal todo={todo} updateState = {getTodos} deleteTodo = {deleteTodo} /> */}
+                 <EditTodo setTodosState = {setTodos} 
+                todo={todo} todos = {todos} updateState = {getTodos}
+                /> 
               </td>
               <td>
                 <button

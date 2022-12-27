@@ -1,0 +1,115 @@
+import React, { useState } from 'react';
+import Modal from 'react-modal';
+import axios from 'axios';
+
+
+const UpdateModal = (todo) => {
+  const [item, setItem] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
+  const fetchItem = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/dashboard/${todo.id}`);
+      setItem(response.data);
+      setTitle(response.data.title);
+      setDescription(response.data.description);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateItem = async (updatedItem) => {
+    try {
+      await axios.put(`http://localhost:8080/dashboard/update/${todo.id}`, updatedItem)
+      .then( fetchItem())
+      
+     
+      setItem({});
+    } catch (error) {
+      console.error(error);
+    }finally{
+      
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    updateItem({ title, description });
+    setIsModalOpen(false);
+    
+  };
+
+
+
+
+
+
+
+/* 
+const UpdateModal = (props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+
+  const updateItem = async (updatedItem) => {
+   
+    try {
+      const body = {title, description}
+      await axios.put(`http://localhost:8080/dashboard/update/${props.todo.id}`, {
+ 
+      })
+      .then(props.updateState)
+    } catch (err) {
+      console.log(err.message)
+    }
+      
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    updateItem({ title, description });
+    setIsModalOpen(false);
+  };
+ */
+  return (
+    <div>
+      <button type="button" onClick={() => setIsModalOpen(true)}>
+        Edit
+      </button>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Update Item"
+      >
+        <form onSubmit={handleSubmit}>
+          <label>
+            Title:
+            <input
+              type="text"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+            />
+          </label>
+          <br />
+          <label>
+            Description:
+            <input
+              type="text"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+          </label>
+          <br />
+          <button type="submit">Update</button>
+          <button type="button" onClick={() => setIsModalOpen(false)}>
+            Cancel
+          </button>
+        </form>
+      </Modal>
+    </div>
+  );
+};
+
+export default UpdateModal;

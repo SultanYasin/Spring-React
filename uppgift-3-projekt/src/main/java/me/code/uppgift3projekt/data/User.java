@@ -1,8 +1,7 @@
 package me.code.uppgift3projekt.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,6 +13,14 @@ public class User implements UserDetails {
 
     private String username, password;
 
+    public User() {
+    }
+
+/*    @JsonCreator
+    @Builder
+    @JsonIgnoreProperties(ignoreUnknown = true)*/
+
+    @JsonIgnoreProperties("User")
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -67,3 +74,6 @@ public class User implements UserDetails {
         return getUsername().equals(user.getUsername());
     }
 }
+
+
+

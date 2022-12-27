@@ -1,17 +1,55 @@
 package me.code.uppgift3projekt.data;
 
-public class Post {
+import javax.persistence.*;
 
-    private String title;
-    private String content;
-    private User creator;
+@Entity
+public class Post{
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+        @Column(nullable = false, unique = true)
+        private String title;
+
+        @Column(nullable = false )
+        private String description;
+
+        @Column
+        private boolean completed;
+
+
+    public Post( String title , String description ) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+
+    }
 
     public Post() {}
 
-    public Post(String title, String content, User creator) {
-        this.title = title;
-        this.content = content;
-        this.creator = creator;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 
     public String getTitle() {
@@ -22,19 +60,14 @@ public class Post {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
-    }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public void getCreator(User creator) {
-        this.creator = creator;
-    }
 }
+
+
+
+
+
+
+
+
+

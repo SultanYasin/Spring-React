@@ -31,7 +31,7 @@ function Register() {
         password: password,
       }); 
       alert("User Registation Successfully");
-      window.location='/login'
+      window.location='login'
       
     } catch (err) {
       setErr(err.message);

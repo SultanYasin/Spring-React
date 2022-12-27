@@ -1,59 +1,50 @@
 package me.code.uppgift3projekt.service;
 
 import me.code.uppgift3projekt.data.Post;
-import me.code.uppgift3projekt.data.User;
-import me.code.uppgift3projekt.exception.NotOwnerException;
-import me.code.uppgift3projekt.exception.PostAlreadyExistsException;
 import me.code.uppgift3projekt.exception.PostDoesNotExistException;
 import me.code.uppgift3projekt.repository.PostRepository;
-import me.code.uppgift3projekt.repository.UserRepository;
+import me.code.uppgift3projekt.repository.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
+import java.util.List;
 
 @Service
-public class PostService {
-
-    private final PostRepository repository;
+public class PostService implements TodoService {
 
     @Autowired
-    public PostService(PostRepository repository) {
-        this.repository = repository;
-    }
+    PostRepository repository;
 
-    public Post create(User user, String title, String content) throws PostAlreadyExistsException {
-
-        var existing = repository.getByTitle(title);
-        if (existing.isPresent()) throw new PostAlreadyExistsException();
-
-        var post = new Post(title, content, user);
-        repository.save(post);
-        return post;
-    }
-
-    public Post delete(User user, String title) throws PostDoesNotExistException, NotOwnerException {
-        var post = repository
-                .getByTitle(title).orElseThrow(PostDoesNotExistException::new);
-
-        if (!post.getCreator().equals(user)) throw new NotOwnerException();
-        repository.delete(post);
-        return post;
+    @Override
+    public Post createTodo(Post todo) {
+        System.out.println("\n Service : save ");
+        return repository.save(todo);
     }
 
 
-    public Post edit(User user, String title, String updatedContent) throws PostDoesNotExistException, NotOwnerException {
-        var post = repository
-                .getByTitle(title).orElseThrow(PostDoesNotExistException::new);
+    public Post updatePost(Long id, Post updatedPost) throws PostDoesNotExistException {
+        if (repository.existsById(id)) {
 
-        if (!post.getCreator().equals(user)) throw new NotOwnerException();
-
-        post.setContent(updatedContent);
-        repository.save(post);
-        return post;
+            updatedPost.setId(id);
+            return repository.save(updatedPost);
+        } else {
+            throw new PostDoesNotExistException();
+        }
     }
 
-    public Collection<Post> getAll() {
-        return repository.getAll();
+
+    @Override
+    public void deleteTodo(Long id) throws PostDoesNotExistException {
+        Post post = repository.findById(id).orElseThrow(() -> new PostDoesNotExistException());
+        System.out.println("\n Service : Delete ");
+        repository.deleteById(id);
+
     }
+
+    @Override
+    public List<Post> getAllTodos() {
+        System.out.println("\n Service : Get all");
+        return repository.findAll();
+    }
+
 }

@@ -20,20 +20,21 @@ public class LoginFilter<generatedToken> extends UsernamePasswordAuthenticationF
 
    private final AuthenticationManager manger;
 
+   public static String username;
+
 
    @Autowired
    public LoginFilter(AuthenticationManager manger){
        this.manger = manger;
    }
 
-    @Override // autentisering
+    @Override
     public Authentication attemptAuthentication(
             HttpServletRequest request,
             HttpServletResponse response
     ) throws AuthenticationException {
 
-    //get username & password from header. all ok? return new token
-        var username = request.getHeader("username");
+            username = request.getHeader("username");
         var password = request.getHeader("password");
 
         var auth =  new UsernamePasswordAuthenticationToken(username , password);
@@ -56,11 +57,11 @@ public class LoginFilter<generatedToken> extends UsernamePasswordAuthenticationF
                     .withSubject(authResult.getName())
                     .sign(algorithm);
 
-            response.setHeader("x-genratedtoken" ,generatedToken );// info returns in response
+            response.setHeader("Authorization" ,generatedToken );// info returns in response
             // without "Access-Control-Expose-Headers" token will be always hidden.
             int counter = 0;
-            response.setHeader("Access-Control-Expose-Headers", "x-genratedtoken");//************************
-            System.out.println("Generated token is : \n " + generatedToken  +"\n" + ++counter);
+            response.setHeader("Access-Control-Expose-Headers", "Authorization");
+            System.out.println("Generated token is : \n " + generatedToken  +"\n" );
 
         }catch (JWTCreationException exception){
             exception.printStackTrace();
