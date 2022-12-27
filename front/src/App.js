@@ -1,56 +1,45 @@
 import "./App.css";
-import LocalStorage from "./util/LocalStorage";
-import Register from "./Components/Register";
-import { Route, Routes } from "react-router-dom";
+import React , {useEffect}from 'react'
+import Register from "./Components/Reg_Login/Register";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./Components/Home";
-import Login from "./Components/Login";
-import PrivateRouteWrappar from "./Components/PrivateRouteWrappar";
-import Header from "./Components/Header";
+import Login from "./Components/Reg_Login/Login";
+import Landing from "./Components/Landing";
 
 function App() {
-  const [jwt, setJwt] = LocalStorage("", "jwt");
 
-  const getProtected = async () => {
-    var myHeaders = new Headers();
-    myHeaders.append(
-      "Authorization",
-      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzc3NhIn0.yTnCmR9WN5PE0fcyYz2s1nupXxWnfamNQ_rKgschTFM"
-    );
+  const navigate = useNavigate();
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      redirect: "follow",
-    };
+  useEffect(() => { if(!localStorage.getItem('token')){navigate('/')} }, [])
+  
 
-    await fetch("http://localhost:8080/info", requestOptions)
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
-  };
 
   return (
     <Routes>
-      <Route path="/home" element={<Home />} />
-      {/* <Routes>
-      <Route
-        path="/home"
-        element={
-          <PrivateRouteWrappar>
-            {" "}
-            <Home />
-          </PrivateRouteWrappar>
-        }
-      /> */}
+      
+      <Route path="" element={<Landing />} />
       <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
-      <Route path="header" element={<Header />} />
+      <Route path="register" element={<Register />} />   
+      <Route path="home" element={<Home />} />
+    
     </Routes>
   );
 }
 
 export default App;
 /*
+
+
+
+  return (
+    <Routes>
+      <Route path="" element={<Landing />} />
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />        
+     <Route path="home" element={ <ProtectedRouteWrappar> <Home /> </ProtectedRouteWrappar> } />
+    </Routes>
+  );
+
 <button onClick={register}>register</button>
     <div className="App">
       
